@@ -87,20 +87,35 @@ public class Main {
   }
 
   private static void partOneMove(String move) {
-    int numToMove;
-    int from;
-    int to;
-    if (move.length() < 4) {
-      numToMove = Integer.parseInt(move.substring(0, 1));
-      from = Integer.parseInt(move.substring(1, 2));
-      to = Integer.parseInt(move.substring(2, 3));
-    } else {
-      numToMove = Integer.parseInt(move.substring(0, 2));
-      from = Integer.parseInt(move.substring(2, 3));
-      to = Integer.parseInt(move.substring(3, 4));
-    }
+    int numToMove = getNumMove(move);
+    int from = getFrom(move);
+    int to = getTo(move);
     for (int i = 1; i <= numToMove; i++) {
       moveFromStackAtoB(stacksOne.get(from), stacksOne.get(to));
+    }
+  }
+
+  private static int getNumMove(String move) {
+    if (move.length() < 4) {
+      return Integer.parseInt(move.substring(0, 1));
+    } else {
+      return Integer.parseInt(move.substring(0, 2));
+    }
+  }
+
+  private static int getFrom(String move) {
+    if (move.length() < 4) {
+      return Integer.parseInt(move.substring(1, 2));
+    } else {
+      return Integer.parseInt(move.substring(2, 3));
+    }
+  }
+
+  private static int getTo(String move) {
+    if (move.length() < 4) {
+      return Integer.parseInt(move.substring(2, 3));
+    } else {
+      return Integer.parseInt(move.substring(3, 4));
     }
   }
 
