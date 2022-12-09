@@ -34,7 +34,7 @@ public class Main {
       reverseAllStacks();
 
       for (int i = 1; i <= 9; i++) {
-        System.out.println(i + ": " + stacks.get(i).peek());
+        System.out.println(i + ": " + stacks.get(i));
       }
 
     } catch (Exception e) {
@@ -64,6 +64,11 @@ public class Main {
       stacks.put(index, reverseStack(stack));
       index++;
     }
+  }
+
+  private static void moveFromAtoB(Stack<Character> a, Stack<Character> b) {
+    Character target = a.pop();
+    b.push(target);
   }
 
 }
