@@ -1,10 +1,12 @@
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
+  private static Map<Integer, Stack<Character>> stacks = new HashMap<>();
+
   public static void main(String[] args) {
+
 
     File myObj = new File("src/main/resources/input.txt");
 
@@ -16,11 +18,45 @@ public class Main {
         lines.add(data);
       }
 
+      for (String line : lines) {
+        if (line.contains("1")) {
+          break;
+        }
+        for (int i = 0; i < line.length(); i += 4) {
+          int stackIndex = i / 4 + 1;
+          Character entry = line.charAt(i + 1);
+          if (!entry.equals(' ')) {
+            addToStack(stackIndex, entry);
+          }
+        }
+      }
+
+      int currIndex = 1;
+      for (Stack<Character> stack : stacks.values()) {
+        stack = reverseStack(stack);
+        System.out.println(currIndex + ": " + stack.peek());
+        currIndex++;
+      }
+
     } catch (Exception e) {
       System.out.println("An error occurred.");
       e.printStackTrace();
     }
 
+  }
+
+  private static void addToStack(Integer index, Character entry) {
+    stacks.computeIfAbsent(index, k -> new Stack<>());
+    Stack<Character> stack = stacks.get(index);
+    stack.push(entry);
+  }
+
+  private static Stack<Character> reverseStack(Stack<Character> oldStack){
+    Stack<Character> newStack = new Stack<>();
+    while (!oldStack.empty()) {
+      newStack.push(oldStack.pop());
+    }
+    return newStack;
   }
 
 }
