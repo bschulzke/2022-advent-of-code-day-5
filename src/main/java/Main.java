@@ -3,8 +3,8 @@ import java.util.*;
 
 public class Main {
 
-  private static final Map<Integer, Stack<Character>> stacksOne = new HashMap<>();
-  private static Map<Integer, Stack<Character>> stacksTwo = new HashMap<>();
+  private static final Map<Integer, Stack<Character>> stackMapOne = new HashMap<>();
+  private static final Map<Integer, Stack<Character>> stackMapTwo = new HashMap<>();
   private static final ArrayList<String> moves = new ArrayList<>();
 
   public static void main(String[] args) {
@@ -21,11 +21,10 @@ public class Main {
       }
 
       for (String line : lines) {
-        if (line.contains(" 1   2   3   4   5   6   7   8   9")) {
-          continue;
-        }
         if (line.contains("move")) {
           moves.add(getMove(line));
+        }
+        if (lines.contains("move") || line.contains("1")) {
           continue;
         }
         for (int i = 0; i < line.length(); i += 4) {
@@ -44,10 +43,20 @@ public class Main {
       }
 
       StringBuilder builderOne = new StringBuilder();
-      for (Stack<Character> stack : stacksOne.values()) {
+      for (Stack<Character> stack : stackMapOne.values()) {
         builderOne.append(stack.peek());
       }
       System.out.println("Part one: " + builderOne.toString());
+
+      for (String move : moves) {
+        partTwoMove(move);
+      }
+
+      StringBuilder builderTwo = new StringBuilder();
+      for (Stack<Character> stack : stackMapTwo.values()) {
+        builderTwo.append(stack.peek());
+      }
+      System.out.println("Part two: " + builderTwo);
 
     } catch (Exception e) {
       System.out.println("An error occurred.");
@@ -57,11 +66,11 @@ public class Main {
   }
 
   private static void addToStack(Integer index, Character entry) {
-    stacksOne.computeIfAbsent(index, k -> new Stack<>());
-    Stack<Character> stack = stacksOne.get(index);
+    stackMapOne.computeIfAbsent(index, k -> new Stack<>());
+    Stack<Character> stack = stackMapOne.get(index);
     stack.push(entry);
-    stacksTwo.computeIfAbsent(index, k -> new Stack<>());
-    Stack<Character> stackBackup = stacksTwo.get(index);
+    stackMapTwo.computeIfAbsent(index, k -> new Stack<>());
+    Stack<Character> stackBackup = stackMapTwo.get(index);
     stackBackup.push(entry);
   }
 
@@ -75,13 +84,13 @@ public class Main {
 
   private static void reverseAllStacks() {
     int index = 1;
-    for (Stack<Character> stack : stacksOne.values()) {
-      stacksOne.put(index, reverseStack(stack));
+    for (Stack<Character> stack : stackMapOne.values()) {
+      stackMapOne.put(index, reverseStack(stack));
       index++;
     }
     index = 1;
-    for (Stack<Character> stack : stacksTwo.values()) {
-      stacksTwo.put(index, reverseStack(stack));
+    for (Stack<Character> stack : stackMapTwo.values()) {
+      stackMapTwo.put(index, reverseStack(stack));
       index++;
     }
   }
@@ -91,7 +100,26 @@ public class Main {
     int from = getFrom(move);
     int to = getTo(move);
     for (int i = 1; i <= numToMove; i++) {
-      moveFromStackAtoB(stacksOne.get(from), stacksOne.get(to));
+      moveFromStackAtoB(stackMapOne.get(from), stackMapOne.get(to));
+    }
+  }
+
+  private static void partTwoMove(String move) {
+    int numToMove = getNumMove(move);
+    int from = getFrom(move);
+    int to = getTo(move);
+    if (numToMove == 1) {
+      for (int i = 1; i <= numToMove; i++) {
+        moveFromStackAtoB(stackMapTwo.get(from), stackMapTwo.get(to));
+      }
+    } else {
+      Stack<Character> tempStack = new Stack<>();
+      for (int i = 0; i < numToMove; i++) {
+        moveFromStackAtoB(stackMapTwo.get(from), tempStack);
+      }
+      for (int i = 0; i < numToMove; i++) {
+        moveFromStackAtoB(tempStack, stackMapTwo.get(to));
+      }
     }
   }
 
