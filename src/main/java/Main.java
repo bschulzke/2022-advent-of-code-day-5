@@ -31,11 +31,10 @@ public class Main {
         }
       }
 
-      int currIndex = 1;
-      for (Stack<Character> stack : stacks.values()) {
-        stack = reverseStack(stack);
-        System.out.println(currIndex + ": " + stack.peek());
-        currIndex++;
+      reverseAllStacks();
+
+      for (int i = 1; i <= 9; i++) {
+        System.out.println(i + ": " + stacks.get(i).peek());
       }
 
     } catch (Exception e) {
@@ -51,12 +50,20 @@ public class Main {
     stack.push(entry);
   }
 
-  private static Stack<Character> reverseStack(Stack<Character> oldStack){
+  private static Stack<Character> reverseStack(Stack<Character> oldStack) {
     Stack<Character> newStack = new Stack<>();
     while (!oldStack.empty()) {
       newStack.push(oldStack.pop());
     }
     return newStack;
+  }
+
+  private static void reverseAllStacks() {
+    int index = 1;
+    for (Stack<Character> stack : stacks.values()) {
+      stacks.put(index, reverseStack(stack));
+      index++;
+    }
   }
 
 }
