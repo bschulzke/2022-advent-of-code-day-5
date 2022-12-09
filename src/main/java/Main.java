@@ -1,12 +1,11 @@
-import javax.print.DocFlavor;
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
 
-  private static Map<Integer, Stack<Character>> stacks = new HashMap<>();
-  private static ArrayList<String> moves = new ArrayList<>();
+  private static final Map<Integer, Stack<Character>> stacksOne = new HashMap<>();
+  private static Map<Integer, Stack<Character>> stacksTwo = new HashMap<>();
+  private static final ArrayList<String> moves = new ArrayList<>();
 
   public static void main(String[] args) {
 
@@ -41,14 +40,14 @@ public class Main {
       reverseAllStacks();
 
       for (String move : moves) {
-        completeMove(move);
+        partOneMove(move);
       }
 
-      StringBuilder builder = new StringBuilder();
-      for (Stack<Character> stack : stacks.values()) {
-        builder.append(stack.peek());
+      StringBuilder builderOne = new StringBuilder();
+      for (Stack<Character> stack : stacksOne.values()) {
+        builderOne.append(stack.peek());
       }
-      System.out.println(builder.toString());
+      System.out.println("Part one: " + builderOne.toString());
 
     } catch (Exception e) {
       System.out.println("An error occurred.");
@@ -58,9 +57,12 @@ public class Main {
   }
 
   private static void addToStack(Integer index, Character entry) {
-    stacks.computeIfAbsent(index, k -> new Stack<>());
-    Stack<Character> stack = stacks.get(index);
+    stacksOne.computeIfAbsent(index, k -> new Stack<>());
+    Stack<Character> stack = stacksOne.get(index);
     stack.push(entry);
+    stacksTwo.computeIfAbsent(index, k -> new Stack<>());
+    Stack<Character> stackBackup = stacksTwo.get(index);
+    stackBackup.push(entry);
   }
 
   private static Stack<Character> reverseStack(Stack<Character> oldStack) {
@@ -73,13 +75,18 @@ public class Main {
 
   private static void reverseAllStacks() {
     int index = 1;
-    for (Stack<Character> stack : stacks.values()) {
-      stacks.put(index, reverseStack(stack));
+    for (Stack<Character> stack : stacksOne.values()) {
+      stacksOne.put(index, reverseStack(stack));
+      index++;
+    }
+    index = 1;
+    for (Stack<Character> stack : stacksTwo.values()) {
+      stacksTwo.put(index, reverseStack(stack));
       index++;
     }
   }
 
-  private static void completeMove(String move) {
+  private static void partOneMove(String move) {
     int numToMove;
     int from;
     int to;
@@ -93,7 +100,7 @@ public class Main {
       to = Integer.parseInt(move.substring(3, 4));
     }
     for (int i = 1; i <= numToMove; i++) {
-      moveFromStackAtoB(stacks.get(from), stacks.get(to));
+      moveFromStackAtoB(stacksOne.get(from), stacksOne.get(to));
     }
   }
 
